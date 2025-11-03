@@ -1,0 +1,5 @@
+res://character_controller/state_machine
+res://character_controller/sprites/Jump
+res://character_controller/state_machine/states
+res://character_controller/sprites/Death
+res://character_controller

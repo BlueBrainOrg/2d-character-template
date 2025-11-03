@@ -1,0 +1,29 @@
+extends CharacterControllerState
+class_name OneShotState
+## Use this state for when you need to play an animation and change to a different state
+## at the end of the animation or after a timer runs out.
+
+@export var to_state: CharacterControllerState
+
+@export_group("Animation")
+@export var animated_sprite: AnimatedSprite2D
+@export var animation_name: String
+@export var time_shortcut: bool = false
+@export var time: float = 0.0
+
+@export_group("Behaviour")
+@export var override_x_movement := false
+@export var x_movement_value := 0.0
+@export var x_movement_delta := 5.0
+@export var override_y_movement := false
+@export var y_movement_value := 0.0
+@export var y_movement_delta := 5.0
+
+
+func enter(_from, data):
+	animated_sprite.play(animation_name)
+	if animated_sprite.sprite_frames.get_animation_loop(animation_name) or time_shortcut:
+		await get_tree().create_timer(time).timeout
+	else:
+		await animated_sprite.animation_finished
+	state_machine.request_state_change(to_state.name, data)
