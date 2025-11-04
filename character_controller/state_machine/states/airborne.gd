@@ -1,18 +1,56 @@
+@tool
 extends CharacterControllerState
 class_name AirborneState
 
-@export var input_map: InputMapNode
-@export var variables: MovementVariables
+var _required_exports = [
+	"input_map", "variables", "landing_state", "animated_sprite", "rise_animation", 
+	"neutral_animation", "fall_animation"
+]
+var _animation_exports = ["rise_animation", "neutral_animation", "fall_animation"]
+
+@export var input_map: InputMapNode:
+	set(val):
+		input_map = val
+		update_configuration_warnings()
+@export var variables: MovementVariables:
+	set(val):
+		variables = val
+		update_configuration_warnings()
+
 
 @export_group("State Transitions")
-@export var landing_state: CharacterControllerState
+@export var landing_state: CharacterControllerState:
+	set(val):
+		landing_state = val
+		update_configuration_warnings()
+
 
 @export_group("Animations")
-@export var animated_sprite: AnimatedSprite2D
-@export var rise_animation := "air_up"
-@export var neutral_animation := "air_neutral"
-@export var fall_animation := "air_down"
-@export var neutral_margin := 5.0
+@export var animated_sprite: AnimatedSprite2D:
+	set(val):
+		animated_sprite = val
+		update_configuration_warnings()
+
+@export var rise_animation := "air_up":
+	set(val):
+		rise_animation = val
+		update_configuration_warnings()
+
+@export var neutral_animation := "air_neutral":
+	set(val):
+		neutral_animation = val
+		update_configuration_warnings()
+
+@export var fall_animation := "air_down":
+	set(val):
+		fall_animation = val
+		update_configuration_warnings()
+
+@export var neutral_margin := 5.0:
+	set(val):
+		neutral_margin = val
+		update_configuration_warnings()
+
 
 var speed_override := 0.0
 
@@ -23,9 +61,11 @@ var accel: float:  ## Walk acceleration in pixels per second per second
 	set(val):
 		push_error("Tried to set character acceleration through read only property walk_accel")
 
+
 func enter(_from, data):
 	var data_speed_override = abs(data.get("speed_override", 0))
 	speed_override = max(data_speed_override, variables.air_speed)
+
 
 func physics_tick(delta):
 	if actor.is_on_floor():
@@ -52,3 +92,10 @@ func physics_tick(delta):
 		animated_sprite.play(fall_animation)
 	else:
 		animated_sprite.play(rise_animation)
+
+
+func _get_configuration_warnings() -> PackedStringArray:
+	var warnings = []
+	warnings += ConfigurationWarningHelper.collect_required_warnings(self, _required_exports)
+	warnings += ConfigurationWarningHelper.collect_animation_warnings(self, _animation_exports, animated_sprite.sprite_frames.get_animation_names())
+	return warnings

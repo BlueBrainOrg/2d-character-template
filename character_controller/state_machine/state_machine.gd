@@ -1,3 +1,4 @@
+@icon("res://addons/plenticons/icons/16x/custom/multi-diamonds-yellow.png")
 extends CharacterControllerState
 class_name CharacterControllerStateMachine
 
@@ -11,6 +12,7 @@ var current_state: StringName = ""
 var state_change_request_to : StringName = ""
 var state_change_request_data : Dictionary = {}
 var state_change_request_is_pending := false
+var state_change_request_priority: int = 0
 
 
 func enter(_from, _data):
@@ -36,9 +38,16 @@ func _handle_state_change_request():
 	state_change_request_is_pending = false
 
 
-func request_state_change(to: StringName, data: Dictionary = {}, override := false):
-	if state_change_request_is_pending and not override:
-		push_warning("State change request rejected: another request is pending")
+func request_state_change(to: StringName, data: Dictionary = {}, priority: int = 0, override := false):
+	var same_priority = priority == state_change_request_priority
+	var priority_override = (same_priority and override) or priority > state_change_request_priority
+	if state_change_request_is_pending and not priority_override:
+		var warning_msg = "State change request rejected"
+		if same_priority:
+			warning_msg += "\nreason: Same priority without override"
+		else:
+			warning_msg += "\nreason: pending request has higher priority"
+		push_warning(warning_msg)
 		return
 	state_change_request_to = to
 	state_change_request_data = data
@@ -55,7 +64,10 @@ func force_change_state(to: StringName, data: Dictionary):
 		print("data sent:")
 		print(data)
 	states[from].exit(to, data)
+	states[from].is_active = false
+	
 	states[to].enter(from, data)
+	states[to].is_active = true
 
 
 func add_state(state_node: CharacterControllerState):

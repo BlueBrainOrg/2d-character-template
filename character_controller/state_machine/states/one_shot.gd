@@ -27,3 +27,10 @@ func enter(_from, data):
 	else:
 		await animated_sprite.animation_finished
 	state_machine.request_state_change(to_state.name, data)
+
+func physics_tick(_delta):
+	if override_x_movement:
+		actor.velocity.x = move_toward(actor.velocity.x, x_movement_value, x_movement_delta)
+	
+	if override_y_movement:
+		actor.velocity.y = move_toward(actor.velocity.y, y_movement_value, y_movement_delta)

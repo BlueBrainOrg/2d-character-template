@@ -32,6 +32,7 @@ shape = SubResource("RectangleShape2D_qq781")
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(0, -74)
 zoom = Vector2(2, 2)
+process_callback = 0
 position_smoothing_enabled = true
 
 [node name="InputMap" type="Node" parent="."]
@@ -48,6 +49,7 @@ jump_x_modifier = 1.15
 script = ExtResource("4_t600w")
 default_state = NodePath("Grounded")
 is_root = true
+metadata/_custom_type_script = "uid://b4u3gi8hgjlet"
 
 [node name="Grounded" type="Node" parent="StateMachine" node_paths=PackedStringArray("input_map", "variables", "jump_state", "fall_state", "animated_sprite")]
 script = ExtResource("5_t600w")
@@ -58,11 +60,13 @@ fall_state = NodePath("../Airborne")
 animated_sprite = NodePath("../../AnimatedSprite2D")
 walk_speed_animation_magic_number = 90.0
 run_speed_animation_magic_number = 150.0
+metadata/_custom_type_script = "uid://b3fwraueavvlt"
 
 [node name="ToAttack" type="Node" parent="StateMachine/Grounded" node_paths=PackedStringArray("to_state")]
 script = ExtResource("8_clehh")
 to_state = NodePath("../../Attack")
 input = "attack"
+metadata/_custom_type_script = "uid://ke7ebekdcqfn"
 
 [node name="JumpSquat" type="Node" parent="StateMachine" node_paths=PackedStringArray("to_state", "animated_sprite")]
 script = ExtResource("6_c7ixp")
@@ -71,7 +75,7 @@ animated_sprite = NodePath("../../AnimatedSprite2D")
 animation_name = "land"
 time_shortcut = true
 time = 0.05
-metadata/_custom_type_script = "uid://b3fwraueavvlt"
+metadata/_custom_type_script = "uid://dadlfrrf4y021"
 
 [node name="JumpAir" type="Node" parent="StateMachine" node_paths=PackedStringArray("input_map", "variables", "landing_state", "airborne_state", "animated_sprite")]
 script = ExtResource("7_c7ixp")
