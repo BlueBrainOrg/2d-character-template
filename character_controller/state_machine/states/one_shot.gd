@@ -1,9 +1,17 @@
+@tool
 extends CharacterControllerState
 class_name OneShotState
 ## Use this state for when you need to play an animation and change to a different state
 ## at the end of the animation or after a timer runs out.
 
-@export var to_state: CharacterControllerState
+var _required_exports: Array[String] = ["to_state", "animated_sprite"]
+var _animation_exports: Array[String] = ["animation_name"]
+
+@export var to_state: CharacterControllerState:
+	set(val):
+		to_state = val
+		update_configuration_warnings()
+
 
 @export_group("Animation")
 @export var animated_sprite: AnimatedSprite2D
@@ -34,3 +42,9 @@ func physics_tick(_delta):
 	
 	if override_y_movement:
 		actor.velocity.y = move_toward(actor.velocity.y, y_movement_value, y_movement_delta)
+
+func _get_configuration_warnings() -> PackedStringArray:
+	var warnings: Array[String] = []
+	warnings += ConfigurationWarningHelper.collect_required_warnings(self, _required_exports)
+	warnings += ConfigurationWarningHelper.collect_animation_warnings(self, _animation_exports, animated_sprite.sprite_frames.get_animation_names())
+	return warnings

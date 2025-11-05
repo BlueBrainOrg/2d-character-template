@@ -1,17 +1,11 @@
 @icon("res://addons/plenticons/icons/16x/custom/jump-to-yellow.png")
 @tool
 extends Node
-class_name DynamicStateTransition
+class_name StateTransition
 
 @export var to_state: CharacterControllerState:
 	set(val):
 		to_state = val
-		update_configuration_warnings()
-
-## InputMap action name to listen to
-@export var input: String:
-	set(val):
-		input = val
 		update_configuration_warnings()
 
 ## Priority used when requesting a state change, higher values take priority over lower values.
@@ -25,10 +19,17 @@ class_name DynamicStateTransition
 ## data handling.
 @export var data: Dictionary = {}
 
-var parent : CharacterControllerState
+@export var dynamic_data: Dictionary[String, DynamicDataRow] = {}
 
+var parent : CharacterControllerState
 var state_machine: CharacterControllerStateMachine
 
+func _should_run():
+	if Engine.is_editor_hint():
+		return false
+	if not parent.is_active:
+		return false
+	return true
 
 func _ready():
 	if Engine.is_editor_hint():
@@ -45,30 +46,14 @@ func _ready():
 	else:
 		state_machine = parent.state_machine
 
-
-func _physics_process(_delta: float) -> void:
-	if Engine.is_editor_hint():
-		return
-	if not parent.is_active:
-		return
-
-	if Input.is_action_just_pressed(input):
-		state_machine.request_state_change(to_state.name, data, priority)
-
-
-func _get_configuration_warnings():
-	InputMap.load_from_project_settings()
-	var warnings = []
-	
-	if input == null or input == "":
-		warnings.append("No input specified for transition")
-	elif not InputMap.has_action(input):
-		warnings.append("Specified input action does not exist")
-	
-	if to_state == null:
-		warnings.append("No to_state defined")
-	
-	if not get_parent() is CharacterControllerState:
-		warnings.append("Transitions need to be nested below state or state machine")
-	
-	return warnings
+func get_all_data():
+	var result = {}
+	result.merge(data)
+	for key in dynamic_data:
+		var row = dynamic_data[key]
+		var row_object = get_node(row.object)
+		var value = row_object.get(row.property)
+		if value is Callable:
+			value = value.call()
+		result[key] = value
+	return result

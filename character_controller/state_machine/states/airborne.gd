@@ -2,11 +2,11 @@
 extends CharacterControllerState
 class_name AirborneState
 
-var _required_exports = [
+var _required_exports : Array[String] = [
 	"input_map", "variables", "landing_state", "animated_sprite", "rise_animation", 
 	"neutral_animation", "fall_animation"
 ]
-var _animation_exports = ["rise_animation", "neutral_animation", "fall_animation"]
+var _animation_exports : Array[String] = ["rise_animation", "neutral_animation", "fall_animation"]
 
 @export var input_map: InputMapNode:
 	set(val):

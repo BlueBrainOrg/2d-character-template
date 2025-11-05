@@ -1,3 +1,4 @@
+@tool
 @icon("res://addons/plenticons/icons/16x/custom/multi-diamonds-yellow.png")
 extends CharacterControllerState
 class_name CharacterControllerStateMachine
@@ -83,6 +84,8 @@ func add_state(state_node: CharacterControllerState):
 
 
 func _ready() -> void:
+	if Engine.is_editor_hint():
+		return
 	if is_root:
 		actor = get_parent()
 	for child in get_children():
@@ -91,10 +94,21 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
+	
 	if always_active:
 		physics_tick(delta)
 
 
 func _process(delta: float) -> void:
+	if Engine.is_editor_hint():
+		return
+	
 	if always_active:
 		render_tick(delta)
+
+func _get_configuration_warnings() -> PackedStringArray:
+	var warnings = []
+	warnings += ConfigurationWarningHelper.collect_required_warnings(self, ["default_state"])
+	return warnings

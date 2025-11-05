@@ -2,7 +2,7 @@ extends Object
 class_name ConfigurationWarningHelper
 
 static func collect_required_warnings(obj: Node, fields: Array[String]) -> Array[String]:
-	var warnings = []
+	var warnings: Array[String] = []
 	for required in fields:
 		var value = obj.get(required)
 		var type = typeof(value)
@@ -21,7 +21,7 @@ static func collect_required_warnings(obj: Node, fields: Array[String]) -> Array
 
 
 static func collect_animation_warnings(obj: Node, fields: Array[String], available_animations: Array[String]) -> Array[String]:
-	var warnings = []
+	var warnings: Array[String] = []
 	for animation in fields:
 		var animation_name = obj.get(animation)
 		if animation_name not in available_animations:
