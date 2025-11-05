@@ -112,6 +112,30 @@ text = "70"
 horizontal_alignment = 1
 vertical_alignment = 1
 
+[node name="CollisionPolygon2D7" type="CollisionPolygon2D" parent="StaticBody2D"]
+position = Vector2(1016, 0)
+script = ExtResource("1_fj7yv")
+
+[node name="Box" type="Polygon2D" parent="StaticBody2D/CollisionPolygon2D7"]
+color = Color(0.21839999, 0.21839999, 0.39, 1)
+polygon = PackedVector2Array(0, 600, 0, 500, 90, 500, 90, 600)
+
+[node name="Label" type="Label" parent="StaticBody2D/CollisionPolygon2D7/Box"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 24.0
+offset_top = 556.0
+offset_right = 64.0
+offset_bottom = 579.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "70"
+horizontal_alignment = 1
+vertical_alignment = 1
+
 [node name="CollisionPolygon2D6" type="CollisionPolygon2D" parent="StaticBody2D"]
 position = Vector2(512, -103)
 script = ExtResource("1_fj7yv")
