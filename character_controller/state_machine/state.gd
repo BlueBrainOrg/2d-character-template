@@ -6,6 +6,7 @@ var state_machine: CharacterControllerStateMachine
 var actor: CharacterBody2D
 
 var is_active := false
+var allow_state_change := true
 
 func enter(_from, _data):
 	pass

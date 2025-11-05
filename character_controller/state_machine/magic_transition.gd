@@ -10,13 +10,12 @@ class_name MagicStateTransition
 
 
 func _physics_process(_delta: float) -> void:
-	if not _should_run():
-		return
-	
 	if auto_check:
 		check_state_change()
 
 func check_state_change():
+	if not _should_run():
+		return
 	var expression = Expression.new()
 	expression.parse(condition)
 	if expression.execute([], state_machine.actor):

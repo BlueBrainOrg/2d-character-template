@@ -15,6 +15,8 @@ class_name StateTransition
 ## requests if both have the same priority.
 @export var override_same_priority := false
 
+@export var force_change_on_not_allowed := false
+
 ## data sent to the state change request, only useful if the to_state enter method implements
 ## data handling.
 @export var data: Dictionary = {}
@@ -29,6 +31,10 @@ func _should_run():
 		return false
 	if not parent.is_active:
 		return false
+	var allow_change = parent.allow_state_change or force_change_on_not_allowed
+	if not allow_change:
+		return false
+	
 	return true
 
 func _ready():
