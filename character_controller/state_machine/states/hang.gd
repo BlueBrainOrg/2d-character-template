@@ -18,7 +18,7 @@ func enter(_from, data):
 	
 	# Player positioning and velocity
 	actor.velocity = Vector2.ZERO
-	var corner_sign = 1 if actor.looking_left else 1
+	var corner_sign = 1 if actor.looking_left else -1
 	var signed_size = Vector2(actor.character_size.x * corner_sign, actor.character_size.y)
 	var actor_corner = actor.global_position - signed_size / 2
 	var displacement = ledge_point - actor_corner
