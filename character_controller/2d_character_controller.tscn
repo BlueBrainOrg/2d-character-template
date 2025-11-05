@@ -51,7 +51,7 @@ character_size = Vector2(10, 29)
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -1.5)
 sprite_frames = ExtResource("1_o8lfe")
-animation = &"ledge_grab_climb"
+animation = &"idle"
 autoplay = "idle"
 script = ExtResource("2_7v80m")
 fps = 12.0
@@ -67,11 +67,11 @@ position_smoothing_enabled = true
 
 [node name="LedgeDetectorR" parent="." instance=ExtResource("4_dfu32")]
 unique_name_in_owner = true
-position = Vector2(5, -10)
+position = Vector2(5, -14)
 
 [node name="LedgeDetectorL" parent="." instance=ExtResource("4_dfu32")]
 unique_name_in_owner = true
-position = Vector2(-5, -10)
+position = Vector2(-5, -14)
 scale = Vector2(-1, 1)
 
 [node name="InputMap" type="Node" parent="."]
@@ -111,6 +111,7 @@ script = ExtResource("12_8td1g")
 auto_check = true
 condition = "not is_on_floor()"
 to_state = NodePath("../../Airborne")
+force_change_on_not_allowed = null
 dynamic_data = Dictionary[String, ExtResource("14_xjsqf")]({
 "speed_override": SubResource("Resource_lankm")
 })
@@ -159,6 +160,7 @@ script = ExtResource("12_8td1g")
 auto_check = true
 condition = "ledge_detector_r.get_snap_point() != null and velocity.y > 0 and not looking_left"
 to_state = NodePath("../../Hang")
+force_change_on_not_allowed = null
 dynamic_data = Dictionary[String, ExtResource("14_xjsqf")]({
 "snap_point": SubResource("Resource_xjsqf")
 })
@@ -169,6 +171,7 @@ script = ExtResource("12_8td1g")
 auto_check = true
 condition = "ledge_detector_l.get_snap_point() != null and velocity.y > 0 and looking_left"
 to_state = NodePath("../../Hang")
+force_change_on_not_allowed = null
 dynamic_data = Dictionary[String, ExtResource("14_xjsqf")]({
 "snap_point": SubResource("Resource_e2h5c")
 })
