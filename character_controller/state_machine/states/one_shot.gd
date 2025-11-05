@@ -1,4 +1,5 @@
 @tool
+@icon("res://addons/plenticons/icons/16x/custom/diamond-jump-to-yellow.png")
 extends CharacterControllerState
 class_name OneShotState
 ## Use this state for when you need to play an animation and change to a different state
