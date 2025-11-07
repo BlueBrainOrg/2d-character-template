@@ -17,3 +17,7 @@ class_name MovementVariables
 @export_custom(PROPERTY_HINT_NONE, "suffix:px") var jump_height: float = 50.0
 @export_custom(PROPERTY_HINT_NONE, "suffix:s") var jump_time: float = .25
 @export var jump_x_modifier: float = 1.25
+
+@export_group("Wall")
+@export_custom(PROPERTY_HINT_NONE, "suffix:px/s") var wall_slide_speed: float = 200.0  ## Speed in pixels per second
+@export_custom(PROPERTY_HINT_NONE, "suffix:s") var time_to_wall_slide_speed: float = 0.5  ## Time it takes to reach wall_slide_speed from 0

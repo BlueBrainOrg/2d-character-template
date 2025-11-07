@@ -13,11 +13,10 @@ func _physics_process(_delta: float) -> void:
 	if auto_check:
 		check_state_change()
 
-func check_state_change():
+func check_state_change() -> void:
 	if not _should_run():
 		return
-	var expression = Expression.new()
+	var expression := Expression.new()
 	expression.parse(condition)
 	if expression.execute([], state_machine.actor):
-		var dyn_data = get_all_data()
-		state_machine.request_state_change(to_state.name, dyn_data, priority, override_same_priority)
+		change_state()

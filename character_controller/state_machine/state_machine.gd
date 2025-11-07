@@ -16,34 +16,36 @@ var state_change_request_is_pending := false
 var state_change_request_priority: int = 0
 
 
-func enter(_from, _data):
+func enter(_from: StringName, _data: Dictionary[String, Variant]) -> void:
 	pass
 
 
-func exit(_to, _data):
+func exit(_to: StringName, _data: Dictionary[String, Variant]) -> void:
 	pass
 
 
-func physics_tick(delta):
+func physics_tick(delta: float) -> void:
 	if current_state:
 		states[current_state].physics_tick(delta)
 
 
-func render_tick(delta):
+func render_tick(delta: float) -> void:
 	if current_state:
 		states[current_state].render_tick(delta)
 
 
-func _handle_state_change_request():
+func _handle_state_change_request() -> void:
 	force_change_state(state_change_request_to, state_change_request_data)
 	state_change_request_is_pending = false
 
 
-func request_state_change(to: StringName, data: Dictionary = {}, priority: int = 0, override := false):
-	var same_priority = priority == state_change_request_priority
-	var priority_override = (same_priority and override) or priority > state_change_request_priority
+func request_state_change(
+	to: StringName, data: Dictionary = {}, priority: int = 0, override := false
+) -> void:
+	var same_priority: bool = priority == state_change_request_priority
+	var priority_override: bool = (same_priority and override) or priority > state_change_request_priority
 	if state_change_request_is_pending and not priority_override:
-		var warning_msg = "State change request rejected"
+		var warning_msg := "State change request rejected: " + str(current_state) + " -> " + str(to)
 		if same_priority:
 			warning_msg += "\nreason: Same priority without override"
 		else:
@@ -57,8 +59,8 @@ func request_state_change(to: StringName, data: Dictionary = {}, priority: int =
 		_handle_state_change_request.call_deferred()
 
 
-func force_change_state(to: StringName, data: Dictionary):
-	var from = current_state
+func force_change_state(to: StringName, data: Dictionary) -> void:
+	var from: StringName = current_state
 	current_state = to
 	print("changing state: " + from + "->" + to)
 	if data:
@@ -71,8 +73,8 @@ func force_change_state(to: StringName, data: Dictionary):
 	states[to].is_active = true
 
 
-func add_state(state_node: CharacterControllerState):
-	var state_name = state_node.name
+func add_state(state_node: CharacterControllerState) -> void:
+	var state_name: StringName = state_node.name
 	if state_name in states:
 		push_error("Duplicate state " + state_name)
 		return
@@ -109,6 +111,6 @@ func _process(delta: float) -> void:
 		render_tick(delta)
 
 func _get_configuration_warnings() -> PackedStringArray:
-	var warnings = []
+	var warnings : Array[String] = []
 	warnings += ConfigurationWarningHelper.collect_required_warnings(self, ["default_state"])
 	return warnings

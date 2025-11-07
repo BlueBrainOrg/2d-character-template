@@ -3,6 +3,8 @@
 extends Node
 class_name StateTransition
 
+var _required_exports: Array[String] = ["to_state"]
+
 @export var to_state: CharacterControllerState:
 	set(val):
 		to_state = val
@@ -26,22 +28,22 @@ class_name StateTransition
 var parent : CharacterControllerState
 var state_machine: CharacterControllerStateMachine
 
-func _should_run():
+func _should_run() -> bool:
 	if Engine.is_editor_hint():
 		return false
 	if not parent.is_active:
 		return false
-	var allow_change = parent.allow_state_change or force_change_on_not_allowed
+	var allow_change: bool = parent.allow_state_change or force_change_on_not_allowed
 	if not allow_change:
 		return false
 	
 	return true
 
-func _ready():
+func _ready() -> void:
 	if Engine.is_editor_hint():
 		return
 
-	var _parent = get_parent()
+	var _parent : Node = get_parent()
 	assert(_parent is CharacterControllerState, "DynamicStateTransition parent must be CharacterControllerState")
 	parent = _parent
 	var _state_machine: CharacterControllerStateMachine
@@ -52,14 +54,30 @@ func _ready():
 	else:
 		state_machine = parent.state_machine
 
-func get_all_data():
-	var result = {}
+func get_all_data() -> Dictionary[String, Variant]:
+	var result: Dictionary[String, Variant] = {}
 	result.merge(data)
 	for key in dynamic_data:
-		var row = dynamic_data[key]
-		var row_object = get_node(row.object)
-		var value = row_object.get(row.property)
+		var row: DynamicDataRow = dynamic_data[key]
+		var row_object : Node = get_node(row.object)
+		var value: Variant = row_object.get(row.property)
 		if value is Callable:
 			value = value.call()
 		result[key] = value
 	return result
+
+
+func change_state() -> void:
+	if OS.is_debug_build():
+		print()
+	state_machine.request_state_change(to_state.name, get_all_data(), priority, override_same_priority)
+
+
+func _get_configuration_warnings() -> PackedStringArray:
+	var warnings: Array[String] = []
+	warnings += ConfigurationWarningHelper.collect_required_warnings(self, _required_exports)
+	
+	if not get_parent() is CharacterControllerState:
+		warnings.append("Transitions need to be nested below state or state machine")
+	
+	return warnings

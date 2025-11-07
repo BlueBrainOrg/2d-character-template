@@ -25,6 +25,3 @@ position = Vector2(0, -3)
 position = Vector2(3, 0)
 shape = SubResource("RectangleShape2D_1672w")
 debug_color = Color(0.9456665, 0.19491443, 0.3407602, 0.41960785)
-
-[connection signal="body_entered" from="Exclusion" to="." method="_on_exclusion_body_entered"]
-[connection signal="body_exited" from="Exclusion" to="." method="_on_exclusion_body_exited"]

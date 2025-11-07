@@ -1,6 +1,5 @@
 @tool
 extends CharacterControllerState
-class_name AirborneState
 
 var _required_exports : Array[String] = [
 	"input_map", "variables", "landing_state", "animated_sprite", "rise_animation", 
@@ -61,22 +60,21 @@ var accel: float:  ## Walk acceleration in pixels per second per second
 	set(val):
 		push_error("Tried to set character acceleration through read only property walk_accel")
 
-
-func enter(_from, data):
-	var data_speed_override = abs(data.get("speed_override", 0))
+func enter(_from: StringName, data: Dictionary[String, Variant]) -> void:
+	var data_speed_override : float = abs(data.get("speed_override", 0.0))
 	speed_override = max(data_speed_override, variables.air_speed)
 
 
-func physics_tick(delta):
+func physics_tick(delta: float) -> void:
 	if actor.is_on_floor():
 		state_machine.request_state_change(landing_state.name)
 		return
-	var gravity = variables.fall_speed / variables.time_to_fall_speed
+	var gravity: float = variables.fall_speed / variables.time_to_fall_speed
 	actor.velocity.y = move_toward(actor.velocity.y, variables.fall_speed, gravity * delta)
 	
-	var h_input = int(Input.is_action_pressed(input_map.walk_right_input)) - int(Input.is_action_pressed(input_map.walk_left_input))
-	var desired_h_speed = speed_override * h_input
-	actor.velocity.x = move_toward(actor.velocity.x, desired_h_speed, accel)
+	var h_input: int = int(Input.is_action_pressed(input_map.walk_right_input)) - int(Input.is_action_pressed(input_map.walk_left_input))
+	var desired_h_speed: float = speed_override * h_input
+	actor.velocity.x = move_toward(actor.get_real_velocity().x, desired_h_speed, accel)
 	
 	# If you lose run speed you don't get it back
 	speed_override = max(abs(actor.velocity.x), variables.air_speed)
@@ -95,7 +93,7 @@ func physics_tick(delta):
 
 
 func _get_configuration_warnings() -> PackedStringArray:
-	var warnings = []
+	var warnings: Array[String] = []
 	warnings += ConfigurationWarningHelper.collect_required_warnings(self, _required_exports)
 	warnings += ConfigurationWarningHelper.collect_animation_warnings(self, _animation_exports, animated_sprite.sprite_frames.get_animation_names())
 	return warnings

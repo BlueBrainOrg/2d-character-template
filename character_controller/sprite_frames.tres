@@ -31,7 +31,7 @@
 [ext_resource type="Texture2D" uid="uid://dhbb56t2q1hre" path="res://character_controller/sprites/Sword Stab/Player Sword Stab 96x48.png" id="27_4bmq5"]
 [ext_resource type="Texture2D" uid="uid://v5erqhvqlnds" path="res://character_controller/sprites/Walk/PlayerWalk 48x48.png" id="28_lxrh4"]
 [ext_resource type="Texture2D" uid="uid://cgnk4uglhecbp" path="res://character_controller/sprites/Wall Land/Player Wall Land (left) 48x48.png" id="31_ymeer"]
-[ext_resource type="Texture2D" uid="uid://bgicqa4up5tcx" path="res://character_controller/sprites/Wall Slide/player wall slide (left) 48x48.png" id="32_rnwgc"]
+[ext_resource type="Texture2D" uid="uid://dkruh47lkqa68" path="res://character_controller/sprites/Wall Slide/player wall slide 48x48.png" id="32_ymeer"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0p4ma"]
 atlas = ExtResource("1_o2keg")
@@ -986,15 +986,15 @@ atlas = ExtResource("31_ymeer")
 region = Rect2(240, 0, 48, 48)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_i4p6w"]
-atlas = ExtResource("32_rnwgc")
+atlas = ExtResource("32_ymeer")
 region = Rect2(0, 0, 48, 48)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_uff6e"]
-atlas = ExtResource("32_rnwgc")
+atlas = ExtResource("32_ymeer")
 region = Rect2(48, 0, 48, 48)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_m4m0v"]
-atlas = ExtResource("32_rnwgc")
+atlas = ExtResource("32_ymeer")
 region = Rect2(96, 0, 48, 48)
 
 [resource]

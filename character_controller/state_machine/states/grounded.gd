@@ -1,7 +1,5 @@
-
 @tool
 extends CharacterControllerState
-class_name GroundedPlayerState
 
 var _required_exports : Array[String] = ["input_map", "variables", "animated_sprite"]
 var _animation_exports : Array[String] = ["idle_animation", "walk_animation", "run_animation"]
@@ -47,10 +45,10 @@ var _animation_exports : Array[String] = ["idle_animation", "walk_animation", "r
 @export_group("Animation Movement Magic")
 ## adjust this value until animation and movement speeds match
 ## You can use walk speed to make it easier to determine how accurate your current ratio is
-@export var walk_speed_animation_magic_number = 1.0  
+@export var walk_speed_animation_magic_number := 1.0  
 ## adjust this value until animation and movement speeds match
 ## You can use run speed to make it easier to determine how accurate your current ratio is
-@export var run_speed_animation_magic_number = 1.0
+@export var run_speed_animation_magic_number := 1.0
 
 # Helper properties
 var walk_accel: float:  ## Walk acceleration in pixels per second per second
@@ -66,39 +64,38 @@ var run_accel: float:  ## Run acceleration in pixels per second per second
 		push_error("Tried to set character acceleration through read only property walk_accel")
 
 
-func get_jump_accel_modifier():
+func get_jump_accel_modifier() -> float:
 	return actor.velocity.x * variables.jump_x_modifier
 
 
-func get_x_velocity():
+func get_x_velocity() -> float:
 	return actor.velocity.x
 
-
-func enter(_from, data):
-	actor.velocity.y = 0
+func enter(_from: StringName, data: Dictionary[String, Variant]) -> void:
 	if "velocity" in data and data["velocity"] is Vector2:
 		actor.velocity = data["velocity"]
+	actor.velocity.y = 0
+	actor.velocity.x = min(actor.velocity.x, variables.run_speed)
 
-
-func physics_tick(delta):
-	var block_actor_turnaround = false  # If true, skip turning actor around on reverse input
+func physics_tick(delta: float) -> void:
+	var block_actor_turnaround := false  # If true, skip turning actor around on reverse input
 	# Signed digital movement: -1;0;1
-	var walk_input = int(Input.is_action_pressed(input_map.walk_right_input)) - int(Input.is_action_pressed(input_map.walk_left_input))
+	var walk_input: int = int(Input.is_action_pressed(input_map.walk_right_input)) - int(Input.is_action_pressed(input_map.walk_left_input))
 	
 	# Turnaround
-	var real_velocity = actor.get_real_velocity()
-	var h_speed = abs(real_velocity.x)
+	var real_velocity: Vector2 = actor.get_real_velocity()
+	var h_speed: float = abs(real_velocity.x)
 	if turnaround_state != null and walk_input != 0 and h_speed > variables.walk_speed:
-		var direction = sign(real_velocity.x)
+		var direction := int(signf(real_velocity.x))
 		if direction * -1 == walk_input:
-			var reverse_velocity = Vector2(real_velocity.x * -1, real_velocity.y)
+			var reverse_velocity := Vector2(real_velocity.x * -1, real_velocity.y)
 			state_machine.request_state_change(turnaround_state.name, {"velocity": reverse_velocity})
 			block_actor_turnaround = true
 	
 	# Idle and walk logic:
-	var is_running = Input.is_action_pressed(input_map.run_input)
-	var desired_h_velocity = (variables.run_speed if Input.is_action_pressed(input_map.run_input) else variables.walk_speed) * walk_input
-	var accel = (run_accel if is_running else walk_accel) * delta
+	var is_running: bool = Input.is_action_pressed(input_map.run_input)
+	var desired_h_velocity: float = (variables.run_speed if Input.is_action_pressed(input_map.run_input) else variables.walk_speed) * walk_input
+	var accel: float = (run_accel if is_running else walk_accel) * delta
 	actor.velocity.x = move_toward(actor.velocity.x, desired_h_velocity, accel)
 	
 	# Looking left and right
@@ -109,10 +106,10 @@ func physics_tick(delta):
 	if actor.get_real_velocity().x == 0:
 		animated_sprite.play(idle_animation)
 	elif is_running:
-		var run_speed_animation_ratio = abs(actor.velocity.x) / run_speed_animation_magic_number
+		var run_speed_animation_ratio: float = abs(actor.velocity.x) / run_speed_animation_magic_number
 		animated_sprite.play(run_animation, run_speed_animation_ratio)
 	else:
-		var walk_speed_animation_ratio = abs(actor.velocity.x) / walk_speed_animation_magic_number
+		var walk_speed_animation_ratio: float = abs(actor.velocity.x) / walk_speed_animation_magic_number
 		animated_sprite.play(walk_animation, walk_speed_animation_ratio)
 
 
