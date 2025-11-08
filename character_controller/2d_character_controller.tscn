@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://03snnob5uow1"]
+[gd_scene load_steps=24 format=3 uid="uid://03snnob5uow1"]
 
 [ext_resource type="SpriteFrames" uid="uid://c3ixhnu256fxs" path="res://character_controller/sprite_frames.tres" id="1_o8lfe"]
 [ext_resource type="Script" uid="uid://bgyus5ghfgqd0" path="res://character_controller/2d_character_controller.gd" id="1_qr5f8"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://cwdjqvddxjqqg" path="res://character_controller/state_machine/states/grounded.gd" id="5_t600w"]
 [ext_resource type="Script" uid="uid://dadlfrrf4y021" path="res://character_controller/state_machine/states/one_shot.gd" id="6_c7ixp"]
 [ext_resource type="Script" uid="uid://cs6bis811k88n" path="res://character_controller/state_machine/states/jump_air.gd" id="7_c7ixp"]
+[ext_resource type="Script" uid="uid://b8ub53csc0twm" path="res://character_controller/state_machine_variables.gd" id="7_lankm"]
 [ext_resource type="Script" uid="uid://bnbe7mxk8wsky" path="res://character_controller/state_machine/states/airborne.gd" id="7_qq781"]
 [ext_resource type="Script" uid="uid://ke7ebekdcqfn" path="res://character_controller/state_machine/input_transition.gd" id="8_clehh"]
 [ext_resource type="Script" uid="uid://cyspnbaj7tun" path="res://character_controller/state_machine/magic_transition.gd" id="10_e2h5c"]
@@ -19,6 +20,12 @@
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_qq781"]
 size = Vector2(10, 29)
+
+[sub_resource type="Resource" id="Resource_yo6go"]
+script = ExtResource("14_xjsqf")
+object = NodePath("..")
+property = "get_x_velocity"
+metadata/_custom_type_script = "uid://bdlrly1hkn1qa"
 
 [sub_resource type="Resource" id="Resource_uvokq"]
 script = ExtResource("14_xjsqf")
@@ -38,6 +45,12 @@ object = NodePath("../../../LedgeDetectorL")
 property = "get_snap_point"
 metadata/_custom_type_script = "uid://bdlrly1hkn1qa"
 
+[sub_resource type="Resource" id="Resource_onmye"]
+script = ExtResource("14_xjsqf")
+object = NodePath("../../MovementConstants")
+property = "run_speed"
+metadata/_custom_type_script = "uid://bdlrly1hkn1qa"
+
 [node name="CharacterBody2D" type="CharacterBody2D"]
 collision_layer = 0
 script = ExtResource("1_qr5f8")
@@ -46,7 +59,7 @@ character_size = Vector2(10, 29)
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -1.5)
 sprite_frames = ExtResource("1_o8lfe")
-animation = &"wall_slide"
+animation = &"dash"
 autoplay = "idle"
 script = ExtResource("2_7v80m")
 fps = 12.0
@@ -72,7 +85,7 @@ scale = Vector2(-1, 1)
 [node name="InputMap" type="Node" parent="."]
 script = ExtResource("4_uc8sf")
 
-[node name="MovementVariables" type="Node" parent="."]
+[node name="MovementConstants" type="Node" parent="."]
 script = ExtResource("5_gtgy5")
 fall_speed = 300.0
 time_to_fall_speed = 0.2
@@ -81,16 +94,21 @@ jump_x_modifier = 1.15
 wall_slide_speed = 100.0
 time_to_wall_slide_speed = 0.75
 
-[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("default_state")]
+[node name="BehaviourVariables" type="Node" parent="."]
+script = ExtResource("7_lankm")
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("default_state", "behaviour_variables")]
+unique_name_in_owner = true
 script = ExtResource("4_t600w")
 default_state = NodePath("Airborne")
+behaviour_variables = NodePath("../BehaviourVariables")
 is_root = true
 metadata/_custom_type_script = "uid://b4u3gi8hgjlet"
 
 [node name="Grounded" type="Node" parent="StateMachine" node_paths=PackedStringArray("input_map", "variables", "turnaround_state", "animated_sprite")]
 script = ExtResource("5_t600w")
 input_map = NodePath("../../InputMap")
-variables = NodePath("../../MovementVariables")
+variables = NodePath("../../MovementConstants")
 turnaround_state = NodePath("../TurnAround")
 animated_sprite = NodePath("../../AnimatedSprite2D")
 walk_speed_animation_magic_number = 90.0
@@ -108,6 +126,9 @@ script = ExtResource("10_e2h5c")
 auto_check = true
 condition = "not is_on_floor()"
 to_state = NodePath("../../Airborne")
+dynamic_data = Dictionary[String, ExtResource("14_xjsqf")]({
+"speed_override": SubResource("Resource_yo6go")
+})
 metadata/_custom_type_script = "uid://cyspnbaj7tun"
 
 [node name="ToJumpSquat" type="Node" parent="StateMachine/Grounded" node_paths=PackedStringArray("to_state")]
@@ -118,6 +139,13 @@ priority = 1
 dynamic_data = Dictionary[String, ExtResource("14_xjsqf")]({
 "speed_override": SubResource("Resource_uvokq")
 })
+metadata/_custom_type_script = "uid://ke7ebekdcqfn"
+
+[node name="ToDash" type="Node" parent="StateMachine/Grounded" node_paths=PackedStringArray("to_state")]
+script = ExtResource("8_clehh")
+input = "run"
+to_state = NodePath("../../Dash")
+priority = 1
 metadata/_custom_type_script = "uid://ke7ebekdcqfn"
 
 [node name="ToTurnaroundInScript" type="Node" parent="StateMachine/Grounded"]
@@ -134,16 +162,23 @@ metadata/_custom_type_script = "uid://dadlfrrf4y021"
 [node name="JumpAir" type="Node" parent="StateMachine" node_paths=PackedStringArray("input_map", "variables", "landing_state", "airborne_state", "animated_sprite")]
 script = ExtResource("7_c7ixp")
 input_map = NodePath("../../InputMap")
-variables = NodePath("../../MovementVariables")
+variables = NodePath("../../MovementConstants")
 landing_state = NodePath("../Grounded")
 airborne_state = NodePath("../Airborne")
 animated_sprite = NodePath("../../AnimatedSprite2D")
 metadata/_custom_type_script = "uid://b3fwraueavvlt"
 
+[node name="ToDash" type="Node" parent="StateMachine/JumpAir" node_paths=PackedStringArray("to_state")]
+script = ExtResource("8_clehh")
+input = "run"
+to_state = NodePath("../../Dash")
+priority = 1
+metadata/_custom_type_script = "uid://ke7ebekdcqfn"
+
 [node name="Airborne" type="Node" parent="StateMachine" node_paths=PackedStringArray("input_map", "variables", "landing_state", "animated_sprite")]
 script = ExtResource("7_qq781")
 input_map = NodePath("../../InputMap")
-variables = NodePath("../../MovementVariables")
+variables = NodePath("../../MovementConstants")
 landing_state = NodePath("../Grounded")
 animated_sprite = NodePath("../../AnimatedSprite2D")
 metadata/_custom_type_script = "uid://b3fwraueavvlt"
@@ -185,6 +220,14 @@ condition = "is_on_wall_only() and get_wall_normal().x > 0 and looking_left"
 to_state = NodePath("../../WallSlide")
 priority = 1
 metadata/_custom_type_script = "uid://cyspnbaj7tun"
+
+[node name="ToDash" type="Node" parent="StateMachine/Airborne" node_paths=PackedStringArray("to_state")]
+script = ExtResource("8_clehh")
+input = "run"
+condition = "state_machine.behaviour_variables.can_airdash()"
+to_state = NodePath("../../Dash")
+priority = 1
+metadata/_custom_type_script = "uid://ke7ebekdcqfn"
 
 [node name="Attack" type="Node" parent="StateMachine" node_paths=PackedStringArray("to_state", "animated_sprite")]
 script = ExtResource("6_c7ixp")
@@ -241,7 +284,7 @@ metadata/_custom_type_script = "uid://ke7ebekdcqfn"
 [node name="WallSlide" type="Node" parent="StateMachine" node_paths=PackedStringArray("input_map", "variables", "animated_sprite")]
 script = ExtResource("16_e2h5c")
 input_map = NodePath("../../InputMap")
-variables = NodePath("../../MovementVariables")
+variables = NodePath("../../MovementConstants")
 animated_sprite = NodePath("../../AnimatedSprite2D")
 metadata/_custom_type_script = "uid://b3fwraueavvlt"
 
@@ -255,7 +298,7 @@ metadata/_custom_type_script = "uid://cyspnbaj7tun"
 [node name="ToHangR" type="Node" parent="StateMachine/WallSlide" node_paths=PackedStringArray("to_state")]
 script = ExtResource("10_e2h5c")
 auto_check = true
-condition = "ledge_detector_r.get_snap_point() != null and not looking_left and velocity.y > 0"
+condition = "ledge_detector_r.has_snap_point() and not looking_left and velocity.y > 0"
 to_state = NodePath("../../Hang")
 priority = 1
 dynamic_data = Dictionary[String, ExtResource("14_xjsqf")]({
@@ -266,7 +309,7 @@ metadata/_custom_type_script = "uid://cyspnbaj7tun"
 [node name="ToHangL" type="Node" parent="StateMachine/WallSlide" node_paths=PackedStringArray("to_state")]
 script = ExtResource("10_e2h5c")
 auto_check = true
-condition = "ledge_detector_l.get_snap_point() != null and looking_left and velocity.y > 0"
+condition = "ledge_detector_l.has_snap_point() and looking_left and velocity.y > 0"
 to_state = NodePath("../../Hang")
 priority = 1
 dynamic_data = Dictionary[String, ExtResource("14_xjsqf")]({
@@ -284,14 +327,24 @@ metadata/_custom_type_script = "uid://cyspnbaj7tun"
 
 [node name="ToWallJump" type="Node" parent="StateMachine/WallSlide" node_paths=PackedStringArray("to_state")]
 script = ExtResource("8_clehh")
-input = "aaa"
+input = "jump"
 to_state = NodePath("../../WallJump")
+metadata/_custom_type_script = "uid://ke7ebekdcqfn"
+
+[node name="ToDash" type="Node" parent="StateMachine/WallSlide" node_paths=PackedStringArray("to_state")]
+script = ExtResource("8_clehh")
+input = "run"
+to_state = NodePath("../../Dash")
+priority = 1
+data = Dictionary[String, Variant]({
+"_turnaround_on_enter": true
+})
 metadata/_custom_type_script = "uid://ke7ebekdcqfn"
 
 [node name="WallJump" type="Node" parent="StateMachine" node_paths=PackedStringArray("input_map", "variables", "landing_state", "airborne_state", "animated_sprite")]
 script = ExtResource("7_c7ixp")
 input_map = NodePath("../../InputMap")
-variables = NodePath("../../MovementVariables")
+variables = NodePath("../../MovementConstants")
 landing_state = NodePath("../Grounded")
 airborne_state = NodePath("../Airborne")
 animated_sprite = NodePath("../../AnimatedSprite2D")
@@ -301,3 +354,45 @@ x_velocity = 150.0
 ignore_input_time = 0.5
 turnaround_on_enter = true
 metadata/_custom_type_script = "uid://b3fwraueavvlt"
+
+[node name="ToDash" type="Node" parent="StateMachine/WallJump" node_paths=PackedStringArray("to_state")]
+script = ExtResource("8_clehh")
+input = "run"
+to_state = NodePath("../../Dash")
+metadata/_custom_type_script = "uid://ke7ebekdcqfn"
+
+[node name="Dash" type="Node" parent="StateMachine" node_paths=PackedStringArray("to_state", "animated_sprite")]
+script = ExtResource("6_c7ixp")
+to_state = NodePath("../Airborne")
+animated_sprite = NodePath("../../AnimatedSprite2D")
+animation_name = "dash"
+time_shortcut = true
+time = 0.1
+override_x_movement = true
+multiply_x_by_looking_left = true
+x_movement_value = 400.0
+x_movement_delta = 9999.0
+override_y_movement = true
+y_movement_delta = 100.0
+dynamic_data = Dictionary[String, ExtResource("14_xjsqf")]({
+"speed_override": SubResource("Resource_onmye")
+})
+metadata/_custom_type_script = "uid://dadlfrrf4y021"
+
+[node name="ToWallSlideR" type="Node" parent="StateMachine/Dash" node_paths=PackedStringArray("to_state")]
+script = ExtResource("10_e2h5c")
+auto_check = true
+condition = "is_on_wall_only() and get_wall_normal().x < 0 and not looking_left"
+to_state = NodePath("../../WallSlide")
+priority = 1
+metadata/_custom_type_script = "uid://cyspnbaj7tun"
+
+[node name="ToWallSlideL" type="Node" parent="StateMachine/Dash" node_paths=PackedStringArray("to_state")]
+script = ExtResource("10_e2h5c")
+auto_check = true
+condition = "is_on_wall_only() and get_wall_normal().x > 0 and looking_left"
+to_state = NodePath("../../WallSlide")
+priority = 1
+metadata/_custom_type_script = "uid://cyspnbaj7tun"
+
+[connection signal="state_changed" from="StateMachine" to="BehaviourVariables" method="_on_state_machine_state_changed"]

@@ -1,7 +1,9 @@
 extends CharacterBody2D
+class_name PlayerCharacterBody2D
 
 @onready var ledge_detector_r: LedgeDetector = %LedgeDetectorR
 @onready var ledge_detector_l: LedgeDetector = %LedgeDetectorL
+@onready var state_machine: CharacterControllerStateMachine = %StateMachine
 
 @export var character_size: Vector2
 

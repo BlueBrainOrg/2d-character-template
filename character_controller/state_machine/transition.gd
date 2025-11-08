@@ -21,7 +21,7 @@ var _required_exports: Array[String] = ["to_state"]
 
 ## data sent to the state change request, only useful if the to_state enter method implements
 ## data handling.
-@export var data: Dictionary = {}
+@export var data: Dictionary[String, Variant] = {}
 
 @export var dynamic_data: Dictionary[String, DynamicDataRow] = {}
 

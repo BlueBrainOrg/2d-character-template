@@ -37,19 +37,30 @@ var _animation_exports: Array[String] = ["animation_name"]
 @export var y_movement_delta := 5.0
 
 @export_group("Data")
-@export var _data: Dictionary = {}
+@export var _data: Dictionary[String, Variant] = {}
 @export var dynamic_data: Dictionary[String, DynamicDataRow] = {}
 
+var execution_time: String
+
 func enter(_from: StringName, data: Dictionary[String, Variant]) -> void:
+	var turnaround: bool = data.get("_turnaround_on_enter", false)
+	for key in data:
+		if key.begins_with("_"):
+			data.erase(key)
+	
 	animated_sprite.play(animation_name)
-	if turnaround_on_enter:
+	if turnaround_on_enter or turnaround:
 		actor.looking_left = not actor.looking_left
+	
+	execution_time = Time.get_datetime_string_from_system()
+	var _execution_time := execution_time
 	if animated_sprite.sprite_frames.get_animation_loop(animation_name) or time_shortcut:
 		print("waiting for time_shortcut")
 		await get_tree().create_timer(time).timeout
 	else:
 		await animated_sprite.animation_finished
-	state_machine.request_state_change(to_state.name, get_all_data(data))
+	if execution_time == _execution_time:
+		state_machine.request_state_change(to_state.name, get_all_data(data))
 
 func physics_tick(_delta: float) -> void:
 	if override_x_movement:

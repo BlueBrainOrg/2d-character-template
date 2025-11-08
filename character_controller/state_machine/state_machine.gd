@@ -3,7 +3,10 @@
 extends CharacterControllerState
 class_name CharacterControllerStateMachine
 
+signal state_changed(from: StringName, to: StringName)
+
 @export var default_state: CharacterControllerState
+@export var behaviour_variables: BehaviourVariables
 @export var always_active := true  ## set to false if used as a nested state_machine
 @export var is_root := false
 
@@ -40,7 +43,7 @@ func _handle_state_change_request() -> void:
 
 
 func request_state_change(
-	to: StringName, data: Dictionary = {}, priority: int = 0, override := false
+	to: StringName, data: Dictionary[String, Variant] = {}, priority: int = 0, override := false
 ) -> void:
 	var same_priority: bool = priority == state_change_request_priority
 	var priority_override: bool = (same_priority and override) or priority > state_change_request_priority
@@ -59,9 +62,10 @@ func request_state_change(
 		_handle_state_change_request.call_deferred()
 
 
-func force_change_state(to: StringName, data: Dictionary) -> void:
+func force_change_state(to: StringName, data: Dictionary[String, Variant]) -> void:
 	var from: StringName = current_state
 	current_state = to
+	state_changed.emit(from, to)
 	print("changing state: " + from + "->" + to)
 	if data:
 		print("data sent:")

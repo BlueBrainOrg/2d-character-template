@@ -30,10 +30,12 @@ static func collect_animation_warnings(obj: Node, fields: Array[String], availab
 	return warnings
 
 
-static func collect_input_warnings(actions: Array[String]) -> Array[String]:
+static func collect_input_warnings(obj: Node, action_fields: Array[String]) -> Array[String]:
 	InputMap.load_from_project_settings()
 	var warnings: Array[String] = []
-	for action in actions:
+	for action_field in action_fields:
+		var action: Variant = obj.get(action_field)
+		assert(action is String, "Field [" + action_field + "] is not a string type but was registered as an input action")
 		if not InputMap.has_action(action):
 			warnings.append("Specified input action [" + action + "] does not exist")
 	return warnings

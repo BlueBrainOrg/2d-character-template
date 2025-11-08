@@ -16,8 +16,9 @@ extends CharacterControllerState
 @export var animation_speed_multiplier := 1.0
 
 func enter(_from: StringName, _data: Dictionary[String, Variant]) -> void:
-	actor.velocity = Vector2.ZERO
-	#actor.looking_left = not actor.looking_left
+	var wall_x: float = actor.get_wall_normal().x
+	var wall_side: int = -int(signf(wall_x))
+	actor.velocity = Vector2(wall_side * 5, 0.0)
 	animated_sprite.play(animation_name, animation_speed_multiplier)
 
 

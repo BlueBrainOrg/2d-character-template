@@ -1,4 +1,4 @@
-[gd_resource type="SpriteFrames" load_steps=274 format=3 uid="uid://c3ixhnu256fxs"]
+[gd_resource type="SpriteFrames" load_steps=280 format=3 uid="uid://c3ixhnu256fxs"]
 
 [ext_resource type="Texture2D" uid="uid://cp0lb7sgvnpm5" path="res://character_controller/sprites/Jump/player jump 48x48.png" id="1_o2keg"]
 [ext_resource type="Texture2D" uid="uid://dga236wr4leoa" path="res://character_controller/sprites/Air Spin/player air spin 48x48.png" id="1_qvtxj"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://dw027bs0tkhqy" path="res://character_controller/sprites/Hurt-Damaged/Player Hurt 48x48.png" id="6_rnwgc"]
 [ext_resource type="Texture2D" uid="uid://coc4uobfbjjt8" path="res://character_controller/sprites/Death/Player Death 64x64.png" id="6_rpiyb"]
 [ext_resource type="Texture2D" uid="uid://blu2l62mh1ify" path="res://character_controller/sprites/Idle/Player Idle 48x48.png" id="7_bgpsw"]
+[ext_resource type="Texture2D" uid="uid://bhv1gfxh4wcww" path="res://character_controller/sprites/Dash/dash 48x48.png" id="7_rnwgc"]
 [ext_resource type="Texture2D" uid="uid://p10lms5nki45" path="res://character_controller/sprites/Katana Air Attack/player katana air attack (upper body) 80x64.png" id="8_ee55k"]
 [ext_resource type="Texture2D" uid="uid://dulgh1l8w0eqo" path="res://character_controller/sprites/Katana Attack-Sheathe/player katana attack-sheathe 80x64.png" id="9_5ccyv"]
 [ext_resource type="Texture2D" uid="uid://b2llbfocrmbnj" path="res://character_controller/sprites/Katana Continuous Attack/player katana continuous attack 80x64.png" id="10_8ca6p"]
@@ -180,6 +181,26 @@ region = Rect2(384, 0, 48, 48)
 [sub_resource type="AtlasTexture" id="AtlasTexture_m4abe"]
 atlas = ExtResource("5_ymeer")
 region = Rect2(432, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jq6bg"]
+atlas = ExtResource("7_rnwgc")
+region = Rect2(0, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mq7pv"]
+atlas = ExtResource("7_rnwgc")
+region = Rect2(48, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oo81k"]
+atlas = ExtResource("7_rnwgc")
+region = Rect2(96, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ydkte"]
+atlas = ExtResource("7_rnwgc")
+region = Rect2(144, 0, 48, 48)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vx6gb"]
+atlas = ExtResource("7_rnwgc")
+region = Rect2(192, 0, 48, 48)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_imvgp"]
 atlas = ExtResource("6_rpiyb")
@@ -1148,6 +1169,26 @@ animations = [{
 }],
 "loop": true,
 "name": &"crouch_walk",
+"speed": 12.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jq6bg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_mq7pv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oo81k")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ydkte")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vx6gb")
+}],
+"loop": true,
+"name": &"dash",
 "speed": 12.0
 }, {
 "frames": [{
