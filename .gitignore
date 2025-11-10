@@ -27,3 +27,5 @@ mono_crash.*.json
 
 # Ignore addon plugins
 3d/sprite3d/addons
+addons/
+!addons/bluebrains_character_controller
