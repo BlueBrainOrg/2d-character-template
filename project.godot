@@ -26,7 +26,7 @@ window/size/viewport_height=720
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/plenticons/plugin.cfg", "res://addons/script-ide/plugin.cfg")
+enabled=PackedStringArray("res://addons/bluebrains_character_controller/plugin.cfg", "res://addons/script-ide/plugin.cfg")
 
 [input]
 

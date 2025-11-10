@@ -1,0 +1,47 @@
+[gd_scene load_steps=8 format=3 uid="uid://vie2pd3qfb5e"]
+
+[ext_resource type="Script" uid="uid://bgyus5ghfgqd0" path="res://addons/bluebrains_character_controller/character_controller/2d_character_controller.gd" id="1_0y81h"]
+[ext_resource type="Script" uid="uid://dl7ctbe0cv3c2" path="res://addons/bluebrains_character_controller/components/input_map.gd" id="1_8v7b5"]
+[ext_resource type="Script" uid="uid://b8ub53csc0twm" path="res://addons/bluebrains_character_controller/components/state_machine_variables.gd" id="2_g24kt"]
+[ext_resource type="Script" uid="uid://duwoy3nkmvy38" path="res://addons/bluebrains_character_controller/components/movement_variables.gd" id="3_htfjl"]
+[ext_resource type="Script" uid="uid://b4u3gi8hgjlet" path="res://addons/bluebrains_character_controller/character_controller/state_machine/state_machine.gd" id="4_7nxty"]
+[ext_resource type="PackedScene" uid="uid://dg5r27f36mn07" path="res://addons/bluebrains_character_controller/components/ledge_detector.tscn" id="6_0y81h"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wm35u"]
+
+[node name="2dCharacterControllerBase" type="CharacterBody2D"]
+script = ExtResource("1_0y81h")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_wm35u")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+
+[node name="LedgeDetectorR" parent="." instance=ExtResource("6_0y81h")]
+unique_name_in_owner = true
+position = Vector2(5, -14)
+
+[node name="LedgeDetectorL" parent="." instance=ExtResource("6_0y81h")]
+unique_name_in_owner = true
+position = Vector2(-5, -14)
+rotation = 3.1415927
+scale = Vector2(1, -1)
+
+[node name="InputMap" type="Node" parent="."]
+script = ExtResource("1_8v7b5")
+metadata/_custom_type_script = "uid://dl7ctbe0cv3c2"
+
+[node name="BehaviourVariables" type="Node" parent="."]
+script = ExtResource("2_g24kt")
+metadata/_custom_type_script = "uid://b8ub53csc0twm"
+
+[node name="MovementVariables" type="Node" parent="."]
+script = ExtResource("3_htfjl")
+metadata/_custom_type_script = "uid://duwoy3nkmvy38"
+
+[node name="StateMachine" type="Node" parent="." node_paths=PackedStringArray("behaviour_variables")]
+unique_name_in_owner = true
+script = ExtResource("4_7nxty")
+behaviour_variables = NodePath("../BehaviourVariables")
+is_root = true
+metadata/_custom_type_script = "uid://b4u3gi8hgjlet"
