@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="2D Character Template"
+config/tags=PackedStringArray("addon")
 run/main_scene="uid://fkbcjy84gka6"
 config/features=PackedStringArray("4.5", "GL Compatibility")
 config/icon="res://icon.svg"
