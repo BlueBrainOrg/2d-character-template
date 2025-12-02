@@ -1460,6 +1460,14 @@ animations = [{
 }, {
 "frames": [{
 "duration": 1.0,
+"texture": SubResource("AtlasTexture_47hbm")
+}],
+"loop": true,
+"name": &"ledge_hang",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_xv8v0")
 }, {
 "duration": 1.0,

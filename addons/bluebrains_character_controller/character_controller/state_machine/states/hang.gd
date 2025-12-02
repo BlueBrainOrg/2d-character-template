@@ -20,9 +20,7 @@ func enter(_from: StringName, data: Dictionary[String, Variant]) -> void:
 	var ledge_point: Vector2 = data["snap_point"]
 	allow_state_change = false
 	# Hanging frame
-	animated_sprite.stop()
-	animated_sprite.animation = animation_name
-	animated_sprite.frame = 1
+	animated_sprite.play(animation_name)
 	
 	# Player positioning and velocity
 	actor.velocity = Vector2.ZERO
@@ -34,7 +32,7 @@ func enter(_from: StringName, data: Dictionary[String, Variant]) -> void:
 
 	var target_global_position: Vector2 = actor.global_position + displacement + margin
 	var tween := create_tween()
-	tween.tween_property(actor, "global_position", target_global_position, 0.1)
+	tween.tween_property(actor, "global_position", target_global_position, 0.05)
 	
 	execution_time = Time.get_datetime_string_from_system()
 	var _execution_time: String = execution_time

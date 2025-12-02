@@ -55,7 +55,7 @@ shape = SubResource("RectangleShape2D_vnp58")
 [node name="AnimatedSprite2D" parent="." index="1"]
 unique_name_in_owner = true
 sprite_frames = ExtResource("2_318wk")
-animation = &"idle"
+animation = &"ledge_hang"
 
 [node name="LedgeDetectorR" parent="." index="2"]
 position = Vector2(6, -15)
@@ -213,7 +213,7 @@ metadata/_custom_type_script = "uid://dadlfrrf4y021"
 [node name="Hang" type="Node" parent="StateMachine" index="6" node_paths=PackedStringArray("animated_sprite")]
 script = ExtResource("11_723s4")
 animated_sprite = NodePath("../../AnimatedSprite2D")
-animation_name = "ledge_grab_climb"
+animation_name = "ledge_hang"
 metadata/_custom_type_script = "uid://b3fwraueavvlt"
 
 [node name="ToAirborneOnDown" type="Node" parent="StateMachine/Hang" index="0" node_paths=PackedStringArray("to_state")]
