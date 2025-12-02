@@ -75,7 +75,7 @@ func enter(_from: StringName, data: Dictionary[String, Variant]) -> void:
 	if "velocity" in data and data["velocity"] is Vector2:
 		actor.velocity = data["velocity"]
 	actor.velocity.y = 0
-	actor.velocity.x = min(actor.velocity.x, variables.run_speed)
+	actor.velocity.x = min(abs(actor.velocity.x), variables.run_speed) * sign(actor.velocity.x)
 
 func physics_tick(delta: float) -> void:
 	var block_actor_turnaround := false  # If true, skip turning actor around on reverse input
