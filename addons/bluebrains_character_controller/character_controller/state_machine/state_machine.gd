@@ -47,6 +47,8 @@ func request_state_change(
 ) -> void:
 	var same_priority: bool = priority == state_change_request_priority
 	var priority_override: bool = (same_priority and override) or priority > state_change_request_priority
+	if to not in states or not states[to].is_available:
+		return
 	if state_change_request_is_pending and not priority_override:
 		var warning_msg := "State change request rejected: " + str(current_state) + " -> " + str(to)
 		if same_priority:
@@ -66,15 +68,15 @@ func force_change_state(to: StringName, data: Dictionary[String, Variant]) -> vo
 	var from: StringName = current_state
 	current_state = to
 	state_changed.emit(from, to)
-	print("changing state: " + from + "->" + to)
-	if data:
-		print("data sent:")
-		print(data)
 	states[from].exit(to, data)
 	states[from].is_active = false
+	states[from].exited.emit()
+	states[from].exited_to.emit(to)
 	
 	states[to].enter(from, data)
 	states[to].is_active = true
+	states[to].entered.emit()
+	states[to].entered_from.emit(from)
 
 
 func add_state(state_node: CharacterControllerState) -> void:
@@ -97,6 +99,8 @@ func _ready() -> void:
 	for child in get_children():
 		if child is CharacterControllerState:
 			add_state(child)
+	if always_active:
+		is_active = true
 
 
 func _physics_process(delta: float) -> void:
